@@ -1,4 +1,4 @@
-package com.ganesar.percent.api;
+package com.percent.api;
 
 public class ProductNotFoundException extends Exception {
 
