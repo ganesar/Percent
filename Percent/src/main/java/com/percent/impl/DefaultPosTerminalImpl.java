@@ -17,36 +17,22 @@ public class DefaultPosTerminalImpl implements PointOfSaleTerminal {
 	public void setPrice(String productCode, double unitPrice) throws InvalidPriceException {
 		
 		if (!products.containsKey(productCode)) {
-			products.put(productCode, new Product(productCode));
+			products.put(productCode, new Product(productCode)); //Add the product if it is not there
 		}
 		Product product = products.get(productCode);
 		product.setUnitPrice(unitPrice);
 	}
 
-	public void setPrice(String productCode, long volume, double discountedPrice)
-			throws ProductNotFoundException, InvalidPriceException, InvalidVolumeException {
-		if (!products.containsKey(productCode)) 
-			throw new ProductNotFoundException();
-		
-		Product product = products.get(productCode);
-		product.setVolume(volume);
-		product.setDiscountedPrice(discountedPrice);
-	}
-
 	public void setPrice(String productCode, double unitPrice, long volume, double discountedPrice)
 			throws InvalidPriceException, InvalidVolumeException {
 		
-		setPrice(productCode, unitPrice);
-		try {
-			setPrice(productCode, volume, discountedPrice);
-		}catch (ProductNotFoundException e) {
-			throw new RuntimeException("Programming Error. This cannot happen.");
-		}
-
+		setPrice(productCode, unitPrice); //set the price
+		products.get(productCode).setVolume(volume); //set the volume
+		products.get(productCode).setDiscountedPrice(discountedPrice); //set the discounted price
 	}
 
 	public void scan(String productCode) throws ProductNotFoundException {
-		if (!products.containsKey(productCode)) 
+		if (!products.containsKey(productCode)) //Scanning an unknown product
 			throw new ProductNotFoundException();
 		
 		Product product = products.get(productCode);
@@ -54,7 +40,7 @@ public class DefaultPosTerminalImpl implements PointOfSaleTerminal {
 		if (purchases.containsKey(product))
 			qty = purchases.get(product);
 		
-		purchases.put(product, ++qty);
+		purchases.put(product, ++qty); //Add 1 to the qty of scanned product
 
 	}
 
@@ -71,6 +57,7 @@ public class DefaultPosTerminalImpl implements PointOfSaleTerminal {
 				//There is no volume discount. The product priced fully.
 				purchaseValue = purchaseValue.add(new BigDecimal(qty*product.getUnitPrice()));
 			else {
+				//apply the volume discount for the lots and unit price for the remaining single ones 
 				purchaseValue = purchaseValue.add(new BigDecimal(qty/product.getVolume()*product.getDiscountedPrice() //Volume discount 
 										+ qty%product.getVolume()*product.getUnitPrice())); //remaining quantity at full price
 			}

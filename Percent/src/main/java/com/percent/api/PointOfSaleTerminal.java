@@ -17,26 +17,18 @@ public interface PointOfSaleTerminal {
 	
 
 	/**
-	 * This method sets the volume discount for a product. 
-	 * If the product doesn't exist a productNotFoundException is thrown.
-	 * The volume must be greater than or equal to 1. If it is 1, it is assumed that the product is on sale with the discounted price. If it is more than 1, the discount will be applied only for the volume purchased.   
-	 * The discounted Price must be greater than zero and more than the per unit price
-	 * *
-	 * @param productCode  The code that uniquely identifies the product
-	 * @param volume The volume of sale for which the discounted price will be applied
-	 * @param discountedPrice The discounted price for the volume specified
-	 * @throws ProductNotFoundException if the product doesn't exist
-	 * @throws InvalidPriceException if the discounted is zero, negative or less than or equal to the per unit price 
-	 */
-	public void setPrice(String productCode, long volume, double discountedPrice) throws ProductNotFoundException, InvalidPriceException, InvalidVolumeException;
-	
-	/**
-	 * This method is a convenience method that is the equivalent of calling setPrice method to set unit price followed by setPrice method for setting the volume discount.
-	 * This method is also provided to avoid multiple calls to the server. 
-	 * @param productCode
-	 * @param unitPrice
-	 * @param volume
-	 * @param discountedPrice
+	 * This method sets the unit price, volume and discounted price. 
+	 * If the product doesn't exist it is added along with its unit price, volume and discounted price.
+	 * If the product already exists, the unit price, volume and discounted price will be replaced with the new values.  
+	 * @param productCode The code that uniquely identifies the product
+	 * @param unitPrice  The price per unit for the product
+	 * @param volume The size for the discounted price
+	 * @param discountedPrice The discounted volume purchase price
+	 * @throws InvalidPriceException 
+	 * 		- if the unitPrice is zero or negative
+	 * 		- if the discounted price is zero or negative
+	 *      - if the discounted price less than the unit price
+	 * @throws InvalidVolumeException if the volume is less than or equal to 1
 	 */
 	public void setPrice(String productCode, double unitPrice, long volume, double discountedPrice) throws InvalidPriceException, InvalidVolumeException;
 	
