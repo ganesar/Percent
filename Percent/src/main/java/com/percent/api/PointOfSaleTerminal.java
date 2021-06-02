@@ -28,17 +28,17 @@ public interface PointOfSaleTerminal {
 	 * @throws ProductNotFoundException if the product doesn't exist
 	 * @throws InvalidPriceException if the discounted is zero, negative or less than or equal to the per unit price 
 	 */
-	public void setVolumeDiscount(String productCode, long volume, double discountedPrice) throws ProductNotFoundException, InvalidPriceException, InvalidVolumeException;
+	public void setPrice(String productCode, long volume, double discountedPrice) throws ProductNotFoundException, InvalidPriceException, InvalidVolumeException;
 	
 	/**
-	 * This method is a convenience method that is the equivalent of calling setPrice method followed by setVolumeDiscount method.
+	 * This method is a convenience method that is the equivalent of calling setPrice method to set unit price followed by setPrice method for setting the volume discount.
 	 * This method is also provided to avoid multiple calls to the server. 
 	 * @param productCode
 	 * @param unitPrice
 	 * @param volume
 	 * @param discountedPrice
 	 */
-	public void setUnitAndVolumePricing(String productCode, double unitPrice, long volume, double discountedPrice) throws InvalidPriceException, InvalidVolumeException;
+	public void setPrice(String productCode, double unitPrice, long volume, double discountedPrice) throws InvalidPriceException, InvalidVolumeException;
 	
 	
 	/**

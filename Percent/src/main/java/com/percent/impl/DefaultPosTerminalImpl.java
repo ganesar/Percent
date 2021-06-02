@@ -23,7 +23,7 @@ public class DefaultPosTerminalImpl implements PointOfSaleTerminal {
 		product.setUnitPrice(unitPrice);
 	}
 
-	public void setVolumeDiscount(String productCode, long volume, double discountedPrice)
+	public void setPrice(String productCode, long volume, double discountedPrice)
 			throws ProductNotFoundException, InvalidPriceException, InvalidVolumeException {
 		if (!products.containsKey(productCode)) 
 			throw new ProductNotFoundException();
@@ -33,16 +33,16 @@ public class DefaultPosTerminalImpl implements PointOfSaleTerminal {
 		product.setDiscountedPrice(discountedPrice);
 	}
 
-	public void setUnitAndVolumePricing(String productCode, double unitPrice, long volume, double discountedPrice)
+	public void setPrice(String productCode, double unitPrice, long volume, double discountedPrice)
 			throws InvalidPriceException, InvalidVolumeException {
 		
-		if (!products.containsKey(productCode)) {
-			products.put(productCode, new Product(productCode));
+		setPrice(productCode, unitPrice);
+		try {
+			setPrice(productCode, volume, discountedPrice);
+		}catch (ProductNotFoundException e) {
+			throw new RuntimeException("Programming Error. This cannot happen.");
 		}
-		Product product = products.get(productCode);
-		product.setUnitPrice(unitPrice);
-		product.setVolume(volume);
-		product.setDiscountedPrice(discountedPrice);
+
 	}
 
 	public void scan(String productCode) throws ProductNotFoundException {
@@ -54,7 +54,7 @@ public class DefaultPosTerminalImpl implements PointOfSaleTerminal {
 		if (purchases.containsKey(product))
 			qty = purchases.get(product);
 		
-		purchases.put(product, qty);
+		purchases.put(product, ++qty);
 
 	}
 
@@ -69,9 +69,9 @@ public class DefaultPosTerminalImpl implements PointOfSaleTerminal {
 			//Apply the volume discount
 			if (product.getVolume()==0)
 				//There is no volume discount. The product priced fully.
-				purchaseValue.add(new BigDecimal(qty*product.getUnitPrice()));
+				purchaseValue = purchaseValue.add(new BigDecimal(qty*product.getUnitPrice()));
 			else {
-				purchaseValue.add(new BigDecimal(qty/product.getVolume()*product.getDiscountedPrice() //Volume discount 
+				purchaseValue = purchaseValue.add(new BigDecimal(qty/product.getVolume()*product.getDiscountedPrice() //Volume discount 
 										+ qty%product.getVolume()*product.getUnitPrice())); //remaining quantity at full price
 			}
 		}

@@ -33,9 +33,9 @@ public class Product {
 	public double getDiscountedPrice() {
 		return discountedPrice;
 	}
-	public void setDiscountedPrice(double discountedprice) throws InvalidPriceException{
+	public void setDiscountedPrice(double discountedPrice) throws InvalidPriceException{
 		if (discountedPrice <= unitPrice) throw new InvalidPriceException();
-		this.discountedPrice = discountedprice;
+		this.discountedPrice = discountedPrice;
 	}
 	@Override
 	public int hashCode() {
