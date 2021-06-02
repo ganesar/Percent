@@ -9,4 +9,5 @@ Steps to Run:
 4. In the cloned location, change to the directory that contains the POM file
 5. mvn compile
 6. mvn test
+7. 7. verify that the 13 test cases have passed.
 
